@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: fashion_ecommerce_db
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: fashion_ecommerce
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - fashion_network
+
+  # Redis Cache
+  redis:
+    image: redis:7.2-alpine
+    container_name: fashion_ecommerce_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - fashion_network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fashion_ecommerce_backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/fashion_ecommerce?authSource=admin
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: fashion_ecommerce_super_secret_jwt_key_production
+      JWT_REFRESH_SECRET: fashion_ecommerce_super_secret_refresh_key_production
+      FRONTEND_URL: http://localhost:3000
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/logs:/app/logs
+    networks:
+      - fashion_network
+
+  # Frontend Web App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fashion_ecommerce_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://localhost:4000/api
+    depends_on:
+      - backend
+    networks:
+      - fashion_network
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  fashion_network:
+    driver: bridge
