@@ -22,11 +22,12 @@ const sendTokenResponse = (user, statusCode, res, message = 'Success') => {
     expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict'
+    sameSite: 'Strict'
   };
 
   res.status(statusCode)
     .cookie('token', token, options)
+    .cookie('refreshToken', refreshToken, options)
     .json({
       success: true,
       message,
@@ -35,13 +36,17 @@ const sendTokenResponse = (user, statusCode, res, message = 'Success') => {
         refreshToken,
         user: {
           id: user._id,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: user.name,
           email: user.email,
+          phone: user.phone,
           role: user.role,
           avatar: user.avatar,
           isEmailVerified: user.isEmailVerified,
-          sellerStatus: user.sellerStatus
+          ...(user.role === 'seller' && {
+            businessInfo: user.businessInfo,
+            sellerStatus: user.sellerStatus
+          }),
+          createdAt: user.createdAt
         }
       }
     });
@@ -52,7 +57,14 @@ const sendTokenResponse = (user, statusCode, res, message = 'Success') => {
 // @access  Public
 const register = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password, role, businessInfo } = req.body;
+    const { name, email, password, role, phone, businessInfo  } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email and password'
+      });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -65,10 +77,10 @@ const register = async (req, res, next) => {
 
     // Create user data
     const userData = {
-      firstName,
-      lastName,
+      name,
       email,
       password,
+      phone,
       role: role || 'buyer'
     };
 
@@ -87,7 +99,7 @@ const register = async (req, res, next) => {
 
     // Send verification email
     try {
-      await emailService.sendVerificationEmail(user.email, verificationToken, user.firstName);
+      await emailService.sendVerificationEmail(user.email, verificationToken, user.name);
     } catch (error) {
       logger.error('Failed to send verification email:', error);
       // Don't fail registration if email fails
@@ -95,7 +107,10 @@ const register = async (req, res, next) => {
 
     logger.info(`New user registered: ${user.email} (${user.role})`);
 
-    sendTokenResponse(user, 201, res, 'User registered successfully. Please check your email for verification.');
+    return res.status(201).json({
+        success: true,
+        message: 'User registered successfully. Please check your email for verification.'
+      });
   } catch (error) {
     logger.error('Registration error:', error);
     next(error);
@@ -126,6 +141,23 @@ const login = async (req, res, next) => {
       });
     }
 
+    
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Account is deactivated. Please contact support.'
+      });
+    }
+
+
+    if (!user.isEmailVerified) return res.status(401).json(
+      { 
+        success: false,
+        message: 'Please verify your email first' 
+      }
+    );
+
+
     // Check if password matches
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
@@ -134,26 +166,20 @@ const login = async (req, res, next) => {
         message: 'Invalid credentials'
       });
     }
-
-    // Check if user is active
-    if (!user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: 'Account is deactivated. Please contact support.'
-      });
-    }
-
     // Update last login
     user.lastLogin = new Date();
     await user.save();
 
     logger.info(`User logged in: ${user.email}`);
+    console.log(`User ${user.email} logged in.`);
 
     sendTokenResponse(user, 200, res, 'Login successful');
-  } catch (error) {
+
+    } catch (error) {
     logger.error('Login error:', error);
     next(error);
   }
+  
 };
 
 // @desc    Logout user
@@ -161,29 +187,58 @@ const login = async (req, res, next) => {
 // @access  Private
 const logout = async (req, res, next) => {
   try {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies?.refreshToken;
 
-    if (refreshToken) {
-      // Remove refresh token from user
-      const user = await User.findById(req.user.id);
-      user.refreshTokens = user.refreshTokens.filter(token => token.token !== refreshToken);
-      await user.save();
+    if (!refreshToken) {
+      return res.status(400).json({ success: false, message: 'No refresh token found in cookies' });
     }
 
+    // Verify token and extract user ID
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (user) {
+      const tokenExists = user.refreshTokens.some(t => t.token === refreshToken);
+      if (tokenExists) {
+        user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
+        await user.save();
+        logger.info(`Refresh token removed for user: ${user.email}`);
+      } else {
+        logger.warn(`Refresh token not found for user ID: ${decoded.id}`);
+      }
+    } else {
+      logger.warn(`User not found for refresh token logout`);
+    }
+
+    // Clear access and refresh cookies
     res.cookie('token', 'none', {
       expires: new Date(Date.now() + 10 * 1000),
-      httpOnly: true
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    res.cookie('refreshToken', 'none', {
+      expires: new Date(Date.now() + 10 * 1000),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
     });
 
     res.status(200).json({
       success: true,
       message: 'Logged out successfully'
     });
+
   } catch (error) {
     logger.error('Logout error:', error);
-    next(error);
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid or expired refresh token'
+    });
   }
 };
+
 
 // @desc    Get current logged in user
 // @route   GET /api/auth/me
@@ -197,23 +252,22 @@ const getMe = async (req, res, next) => {
       data: {
         user: {
           id: user._id,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          name: user.name,
           email: user.email,
+          phone: user.phone,
           role: user.role,
           avatar: user.avatar,
-          phone: user.phone,
-          addresses: user.addresses,
-          preferences: user.preferences,
-          businessInfo: user.businessInfo,
-          sellerStatus: user.sellerStatus,
           isEmailVerified: user.isEmailVerified,
+          ...(user.role === 'seller' && {
+            businessInfo: user.businessInfo,
+            sellerStatus: user.sellerStatus
+          }),
           createdAt: user.createdAt
         }
       }
     });
   } catch (error) {
-    logger.error('Get me error:', error);
+    logger.error('GetMe error:', error);
     next(error);
   }
 };
@@ -224,10 +278,15 @@ const getMe = async (req, res, next) => {
 const verifyEmail = async (req, res, next) => {
   try {
     const { token } = req.params;
+    if (!token) return res.status(400).json({ message: 'Verification token is missing' });
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id);
+      const user = await User.findById({
+      _id: decoded.id,
+      emailVerificationToken: token,
+      emailVerificationExpires: { $gt: Date.now() }
+    });
 
       if (!user) {
         return res.status(400).json({
@@ -246,13 +305,15 @@ const verifyEmail = async (req, res, next) => {
       user.isEmailVerified = true;
       user.emailVerificationToken = undefined;
       user.emailVerificationExpires = undefined;
+      user.isActive = true;
       await user.save();
 
       logger.info(`Email verified for user: ${user.email}`);
+      console.log(`Email verification success for user: ${user.email}`);
 
       res.status(200).json({
         success: true,
-        message: 'Email verified successfully'
+        message: 'Email verified successfully. You can now login.'
       });
     } catch (error) {
       return res.status(400).json({
@@ -287,7 +348,7 @@ const forgotPassword = async (req, res, next) => {
 
     // Send reset email
     try {
-      await emailService.sendPasswordResetEmail(user.email, resetToken, user.firstName);
+      await emailService.sendPasswordResetEmail(user.email, resetToken, user.name);
       
       res.status(200).json({
         success: true,
@@ -355,7 +416,7 @@ const resetPassword = async (req, res, next) => {
 // @access  Public
 const refreshToken = async (req, res, next) => {
   try {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies?.refreshToken;
 
     if (!refreshToken) {
       return res.status(401).json({
@@ -388,23 +449,30 @@ const refreshToken = async (req, res, next) => {
       // Generate new access token
       const newAccessToken = user.generateAuthToken();
 
+      res.cookie('token', newAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      });
+
       res.json({
         success: true,
+        message: 'Access token refreshed successfully',
         data: {
           token: newAccessToken,
           user: {
             id: user._id,
             email: user.email,
             role: user.role,
-            firstName: user.firstName,
-            lastName: user.lastName
+            name: user.name
           }
         }
       });
     } catch (error) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid refresh token'
+        message: 'Invalid or expired refresh token'
       });
     }
   } catch (error) {
@@ -412,6 +480,7 @@ const refreshToken = async (req, res, next) => {
     next(error);
   }
 };
+
 
 module.exports = {
   register,

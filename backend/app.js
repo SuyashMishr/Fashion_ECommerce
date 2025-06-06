@@ -105,11 +105,20 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'success',
+    message: 'Fashion E-Commerce Backend API is running!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'success',
-    message: 'Server is running',
+    message: 'Server is healthy!',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV
   });

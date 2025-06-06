@@ -10,21 +10,17 @@ const {
   resetPassword,
   refreshToken
 } = require('../controllers/authController');
-const { authenticate } = require('../middlewares/auth');
-const validation = require('../middlewares/validation');
+const { authenticate } = require('../middlewares/authMiddleware');
+const validation = require('../middlewares/validateRequest');
 
 const router = express.Router();
 
 // Validation rules
 const registerValidation = [
-  body('firstName')
+  body('name')
     .trim()
-    .isLength({ min: 2, max: 50 })
-    .withMessage('First name must be between 2 and 50 characters'),
-  body('lastName')
-    .trim()
-    .isLength({ min: 2, max: 50 })
-    .withMessage('Last name must be between 2 and 50 characters'),
+    .isLength({ min: 3, max: 50 })
+    .withMessage('First name must be between 3 and 50 characters'),
   body('email')
     .isEmail()
     .normalizeEmail()
@@ -78,7 +74,7 @@ router.post('/register', registerValidation, validation, register);
 router.post('/login', loginValidation, validation, login);
 router.post('/logout', authenticate, logout);
 router.get('/me', authenticate, getMe);
-router.get('/verify-email/:token', verifyEmail);
+router.post('/verify-email/:token', verifyEmail);
 router.post('/forgot-password', forgotPasswordValidation, validation, forgotPassword);
 router.put('/reset-password/:token', resetPasswordValidation, validation, resetPassword);
 router.post('/refresh-token', refreshToken);

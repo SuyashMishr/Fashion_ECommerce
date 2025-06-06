@@ -32,7 +32,7 @@ class EmailService {
   }
 
   async sendVerificationEmail(email, token, firstName) {
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
+    const verificationUrl = `http://localhost:${process.env.PORT}/api/auth/verify-email/${token}`;
     
     const html = `
       <!DOCTYPE html>
@@ -78,7 +78,7 @@ class EmailService {
   }
 
   async sendPasswordResetEmail(email, token, firstName) {
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+    const resetUrl = `http://localhost:${process.env.PORT}/api/auth/forgot-password/${token}`;
     
     const html = `
       <!DOCTYPE html>

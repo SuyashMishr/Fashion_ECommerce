@@ -48,6 +48,7 @@ const authenticate = async (req, res, next) => {
       req.user = user;
       next();
     } catch (error) {
+      logger.error('Authentication error:', error);
       if (error.name === 'TokenExpiredError') {
         return res.status(401).json({
           success: false,
@@ -189,69 +190,6 @@ const optionalAuth = async (req, res, next) => {
   }
 };
 
-// Middleware to refresh token
-const refreshToken = async (req, res, next) => {
-  try {
-    const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-      return res.status(401).json({
-        success: false,
-        message: 'Refresh token is required.'
-      });
-    }
-
-    try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-      const user = await User.findById(decoded.id);
-
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: 'Invalid refresh token.'
-        });
-      }
-
-      // Check if refresh token exists in user's tokens array
-      const tokenExists = user.refreshTokens.some(token => token.token === refreshToken);
-      
-      if (!tokenExists) {
-        return res.status(401).json({
-          success: false,
-          message: 'Refresh token not found.'
-        });
-      }
-
-      // Generate new access token
-      const newAccessToken = user.generateAuthToken();
-
-      res.json({
-        success: true,
-        data: {
-          accessToken: newAccessToken,
-          user: {
-            id: user._id,
-            email: user.email,
-            role: user.role,
-            firstName: user.firstName,
-            lastName: user.lastName
-          }
-        }
-      });
-    } catch (error) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid refresh token.'
-      });
-    }
-  } catch (error) {
-    logger.error('Token refresh error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Server error during token refresh.'
-    });
-  }
-};
 
 module.exports = {
   authenticate,
@@ -259,5 +197,4 @@ module.exports = {
   requireApprovedSeller,
   checkOwnership,
   optionalAuth,
-  refreshToken
 };
