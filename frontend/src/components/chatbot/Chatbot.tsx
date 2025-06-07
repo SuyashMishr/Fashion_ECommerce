@@ -236,6 +236,20 @@ const Chatbot: React.FC = () => {
     };
   };
 
+  // Predefined bot responses for exact keyword matches
+  const botResponses: { [key: string]: string } = {
+    'hello': "Hello! How can I assist you with your fashion needs today? 😊",
+    'hi': "Hi there! Need help finding something stylish?",
+    'help': "I'm here to help! Ask me about products, sizing, orders, or anything fashion-related.",
+    'return': "You can return any item within 14 days of delivery. Would you like to start a return?",
+    'refund': "Refunds are processed within 3-5 business days after we receive your returned item.",
+    'shipping': "We offer free shipping on orders above ₹999. Standard delivery takes 2-5 business days.",
+    'delivery': "Standard delivery takes 2-5 business days. Need express delivery options?",
+    'contact': "You can reach our customer support at support@modernmetro.com or chat here for quick help!",
+    'exchange': "We offer easy exchanges for size or color. Would you like to exchange an item?",
+    'cancel': "To cancel an order, please provide your order number or visit your orders page."
+  };
+
   const generateBotResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
     
