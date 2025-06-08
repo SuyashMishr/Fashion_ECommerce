@@ -51,7 +51,7 @@ exports.verifyPaymentAndPlaceOrder = async (req, res, orderData) => {
             return res.status(400).json({ success: false, message: "Payment verification failed" });
         }
 
-        // 2. Validate and prepare order items
+        // 2. Validate, prepare order items and decrease stock
         const orderItems = await Promise.all(orderData.items.map(async (item) => {
             if (!mongoose.Types.ObjectId.isValid(item.product)) {
                 throw new Error(`Invalid product ID: ${item.product}`);
@@ -65,6 +65,14 @@ exports.verifyPaymentAndPlaceOrder = async (req, res, orderData) => {
             if (item.quantity <= 0) {
                 throw new Error(`Invalid quantity for product: ${product.title}`);
             }
+
+            if (product.stock < item.quantity) {
+                throw new Error(`Not enough stock for product: ${product.title}`);
+            }
+
+            // Decrease the product stock
+            product.stock -= item.quantity;
+            await product.save();
 
             return {
                 product: product._id,
@@ -92,7 +100,7 @@ exports.verifyPaymentAndPlaceOrder = async (req, res, orderData) => {
         order.calculateTotals();
         await order.save();
 
-        // Send order confirmation email
+        // 4. Send order confirmation email
         try {
             const user = await User.findById(req.user._id).select('name email');
             if (!user) {
@@ -102,9 +110,8 @@ exports.verifyPaymentAndPlaceOrder = async (req, res, orderData) => {
             await emailService.sendOrderConfirmationEmail(user.email, order, user.name);
         } catch (error) {
             console.error('Failed to send order confirmation email:', error);
-            // Don’t block the response if email fails
+            // Do not block the order response if email fails
         }
-
 
         return res.status(201).json({ success: true, message: "Order placed successfully", order });
 

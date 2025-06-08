@@ -1,9 +1,15 @@
-const express = require('express');
+// routes/reviewRoutes.js
+const express = require("express");
 const router = express.Router();
+const {
+  addOrUpdateReview,
+  deleteReview,
+  getReviewsForProduct,
+} = require("../controllers/reviewController");
+const { authenticate, authorizeRole } = require("../middlewares/authMiddleware");
 
-// Placeholder routes - will be implemented later
-router.get('/', (req, res) => {
-  res.json({ message: 'Reviews routes - Coming soon' });
-});
+router.post("/", authenticate, authorizeRole('buyer'), addOrUpdateReview);
+router.delete("/:id", authenticate, authorizeRole('buyer'), deleteReview);
+router.get("/product/:productId", authenticate, authorizeRole('buyer'), getReviewsForProduct);
 
 module.exports = router;

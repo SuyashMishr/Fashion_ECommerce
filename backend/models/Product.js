@@ -35,6 +35,8 @@ const productSchema = new mongoose.Schema({
   ],
   images: [{ url: String, public_id: String }],
   stock: { type: Number, default: 0 },
+  averageRating: { type: Number, default: 0 },
+  numReviews: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: Date,
 });
