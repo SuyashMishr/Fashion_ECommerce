@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Test Order Creation</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+    <h1>Test Order Placement</h1>
+    <button onclick="startOrder()">Place Order</button>
+
+    <script>
+        async function startOrder() {
+            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NDQ5Zjg5NzZhOGZmZWM5ODk2MGU5ZCIsImVtYWlsIjoidmlzaGFsdGl3YXJpOTY1NUBnbWFpbC5jb20iLCJyb2xlIjoiYnV5ZXIiLCJpYXQiOjE3NDkzNzEwMzMsImV4cCI6MTc0OTQ1NzQzM30.CUnIT5dbe8F_HZz2c0umSWW8Cd_U4HCgBxKGGDaP9No"; // Replace this with the token for an authenticated user
+
+            // 1. Prepare dummy order data
+            const orderData = {
+                "items": [
+                    {
+                        "product": "68449fdb76a8ffec98960eb8",
+                        "quantity": 2
+                    },
+                    {
+                        "product": "6845130fa1eb044e2ca0999f",
+                        "quantity": 1
+                    }
+                ],
+                "shippingAddress": {
+                    "street": "123 Fashion St",
+                    "city": "Mumbai",
+                    "state": "Maharashtra",
+                    "country": "India",
+                    "pinCode": "400001",
+                    "phoneNumber": "+919876543210"
+                },
+                "billingAddress": {
+                    "street": "456 Style Ave",
+                    "city": "Mumbai",
+                    "state": "Maharashtra",
+                    "country": "India",
+                    "pinCode": "400002",
+                    "phoneNumber": "+919812345678"
+                },
+                "paymentMethod": "Card"
+            }
+
+
+            // 2. Create Razorpay order from backend
+            const razorpayOrderRes = await fetch(
+                "http://localhost:5000/api/payments/create-order",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ amount: 2000 }),
+                }
+            );
+
+            const razorpayOrderData = await razorpayOrderRes.json();
+            console.log("Response from backend:", razorpayOrderData);
+            const razorpayOrder = razorpayOrderData.order;
+
+            // 3. Launch Razorpay checkout
+            const options = {
+                key: "rzp_test_LDfTXckqr1wboK",
+                amount: razorpayOrder.amount,
+                currency: "INR",
+                name: "Test E-Commerce",
+                description: "Test Order Payment",
+                order_id: razorpayOrder.id,
+                handler: async function (response) {
+                    // 4. On success, call your backend to verify and place the order
+                    const verifyRes = await fetch(
+                        "http://localhost:5000/api/orders/place-order",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                            },
+                            body: JSON.stringify({
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                                orderData,
+                            }),
+                        }
+                    );
+
+                    const verifyData = await verifyRes.json();
+                    alert(verifyData.message || "Order placed");
+                    console.log(verifyData);
+                },
+                theme: {
+                    color: "#3399cc",
+                },
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+    </script>
+</body>
+
+</html>

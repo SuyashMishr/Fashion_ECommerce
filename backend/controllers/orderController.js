@@ -1,72 +1,91 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const mongoose = require('mongoose');
+const paymentController = require('./paymentController');
+
+// placeOrder = async (req, res) => {
+//     try {
+//         const { items, shippingAddress, billingAddress, paymentMethod } = req.body;
+
+//         // Validate items
+//         if (!items || !Array.isArray(items) || items.length === 0) {
+//             return res.status(400).json({ message: 'Order must have at least one item.' });
+//         }
+
+//         if (!shippingAddress || !shippingAddress.street || !shippingAddress.city) {
+//             return res.status(400).json({ message: 'Valid shipping address required.' });
+//         }
+
+//         if (!billingAddress) {
+//             return res.status(400).json({ message: 'Billing address is required.' });
+//         }
+
+//         if (!paymentMethod) {
+//             return res.status(400).json({ message: 'Payment method is required.' });
+//         }
+
+//         // Build order items with price snapshot
+//         const orderItems = await Promise.all(items.map(async (item) => {
+//             if (!mongoose.Types.ObjectId.isValid(item.product)) {
+//                 throw new Error(`Invalid product ID: ${item.product}`);
+//             }
+
+//             const product = await Product.findById(item.product);
+//             if (!product) {
+//                 throw new Error(`Product not found: ${item.product}`);
+//             }
+
+//             if (item.quantity <= 0) {
+//                 throw new Error(`Invalid quantity for product: ${product.title}`);
+//             }
+
+//             return {
+//                 product: product._id,
+//                 seller: product.seller,
+//                 quantity: item.quantity,
+//                 price: product.price,
+//             };
+//         }));
+
+//         // Create order
+//         const order = new Order({
+//             buyer: req.user._id,
+//             items: orderItems,
+//             shippingAddress,
+//             billingAddress,
+//             payment: { method: paymentMethod },
+//             pricing: {},
+//         });
+
+//         // Calculate totals before saving
+//         order.calculateTotals();
+
+//         await order.save();
+
+//         return res.status(201).json({ message: 'Order placed successfully', order });
+//     } catch (error) {
+//         return res.status(400).json({ message: error.message });
+//     }
+// };
+
 
 placeOrder = async (req, res) => {
     try {
-        const { items, shippingAddress, billingAddress, paymentMethod } = req.body;
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderData } = req.body;
 
-        // Validate items
-        if (!items || !Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({ message: 'Order must have at least one item.' });
+        // Basic validation
+        if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+            return res.status(400).json({ message: "Missing Razorpay payment details." });
         }
 
-        if (!shippingAddress || !shippingAddress.street || !shippingAddress.city) {
-            return res.status(400).json({ message: 'Valid shipping address required.' });
-        }
+        // Call the Razorpay verification + order creation function
+        return await paymentController.verifyPaymentAndPlaceOrder(req, res, orderData);
 
-        if (!billingAddress) {
-            return res.status(400).json({ message: 'Billing address is required.' });
-        }
-
-        if (!paymentMethod) {
-            return res.status(400).json({ message: 'Payment method is required.' });
-        }
-
-        // Build order items with price snapshot
-        const orderItems = await Promise.all(items.map(async (item) => {
-            if (!mongoose.Types.ObjectId.isValid(item.product)) {
-                throw new Error(`Invalid product ID: ${item.product}`);
-            }
-
-            const product = await Product.findById(item.product);
-            if (!product) {
-                throw new Error(`Product not found: ${item.product}`);
-            }
-
-            if (item.quantity <= 0) {
-                throw new Error(`Invalid quantity for product: ${product.title}`);
-            }
-
-            return {
-                product: product._id,
-                seller: product.seller,
-                quantity: item.quantity,
-                price: product.price,
-            };
-        }));
-
-        // Create order
-        const order = new Order({
-            buyer: req.user._id,
-            items: orderItems,
-            shippingAddress,
-            billingAddress,
-            payment: { method: paymentMethod },
-            pricing: {},
-        });
-
-        // Calculate totals before saving
-        order.calculateTotals();
-
-        await order.save();
-
-        return res.status(201).json({ message: 'Order placed successfully', order });
     } catch (error) {
-        return res.status(400).json({ message: error.message });
+        console.error("Order placement error", error);
+        return res.status(500).json({ message: error.message });
     }
 };
-
 
 getUserOrders = async (req, res) => {
     try {

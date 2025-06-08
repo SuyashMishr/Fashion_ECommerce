@@ -25,7 +25,7 @@ const placeOrderValidation = [
 
     body('paymentMethod')
         .notEmpty().withMessage('Payment method is required')
-        .isIn(['COD', 'UPI', 'Card', 'NetBanking']).withMessage('Invalid payment method'),
+        .isIn(['UPI', 'Card', 'NetBanking']).withMessage('Invalid payment method'),
 ];
 
 // Validation for update order status

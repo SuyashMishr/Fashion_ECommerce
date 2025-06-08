@@ -37,10 +37,7 @@
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "redis": "^4.6.8",
-    "socket.io": "^4.7.2",
-    "stripe": "^13.5.0",
-    "twilio": "^4.15.0",
+    "razorpay": "^2.9.6",
     "winston": "^3.10.0",
     "xss-clean": "^0.1.4"
   },

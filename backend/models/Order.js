@@ -33,7 +33,7 @@ const addressSchema = new mongoose.Schema({
 const paymentSchema = new mongoose.Schema({
   method: {
     type: String,
-    enum: ['COD', 'UPI', 'Card', 'NetBanking'],
+    enum: ['UPI', 'Card', 'NetBanking'],
     required: true,
   },
   status: {

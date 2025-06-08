@@ -19,11 +19,9 @@ const {
 
 // Place order (buyer only)
 router.post(
-  '/',
+  '/place-order',
   authenticate,
   authorizeRole('buyer'),
-  placeOrderValidation,
-  validate,
   placeOrder
 );
 
