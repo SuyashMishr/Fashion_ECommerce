@@ -69,20 +69,6 @@ const userSchema = new mongoose.Schema({
       default: false
     }
   }],
-  preferences: {
-    newsletter: {
-      type: Boolean,
-      default: true
-    },
-    smsNotifications: {
-      type: Boolean,
-      default: false
-    },
-    pushNotifications: {
-      type: Boolean,
-      default: true
-    }
-  },
   // Seller specific fields
   businessInfo: {
     businessName: String,
@@ -127,10 +113,6 @@ const userSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Virtual for full name
-userSchema.virtual('fullName').get(function() {
-  return `${this.firstName} ${this.lastName}`;
-});
 
 // Index for better query performance
 userSchema.index({ email: 1 });
