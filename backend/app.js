@@ -23,7 +23,6 @@ const cartRoutes = require('./routes/cart');
 const wishlistRoutes = require('./routes/wishlist');
 const reviewRoutes = require('./routes/reviews');
 const paymentRoutes = require('./routes/payments');
-const chatbotRoutes = require('./routes/chatbot');
 
 const app = express();
 
@@ -131,7 +130,6 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/chatbot', chatbotRoutes);
 
 // API documentation endpoint
 app.get('/api', (req, res) => {
@@ -148,7 +146,6 @@ app.get('/api', (req, res) => {
       wishlist: '/api/wishlist',
       reviews: '/api/reviews',
       payments: '/api/payments',
-      chatbot: '/api/chatbot'
     },
     documentation: '/api/docs'
   });
