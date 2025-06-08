@@ -1,10 +1,10 @@
-const razorpay = require('./config/razorpay');
+const razorpay = require('../config/razorpay');
 const crypto = require('crypto');
-const Order = require('./models/Order');
-const Product = require('./models/Product');
-const User = require('./models/User');
+const Order = require('../models/Order');
+const Product = require('../models/Product');
+const User = require('../models/User');
 const mongoose = require('mongoose');
-const emailService = require('./services/emailService');
+const emailService = require('../services/emailService');
 
 exports.createRazorpayOrder = async (req, res) => {
     try {
