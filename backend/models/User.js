@@ -108,9 +108,7 @@ const userSchema = new mongoose.Schema({
     }
   }]
 }, {
-  timestamps: true,
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true }
+  timestamps: true
 });
 
 
@@ -118,6 +116,7 @@ const userSchema = new mongoose.Schema({
 userSchema.index({ email: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ createdAt: -1 });
+
 
 // Pre-save middleware to hash password
 userSchema.pre('save', async function(next) {

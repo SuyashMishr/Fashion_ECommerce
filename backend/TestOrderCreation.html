@@ -13,19 +13,20 @@
 
     <script>
         async function startOrder() {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NDQ5Zjg5NzZhOGZmZWM5ODk2MGU5ZCIsImVtYWlsIjoidmlzaGFsdGl3YXJpOTY1NUBnbWFpbC5jb20iLCJyb2xlIjoiYnV5ZXIiLCJpYXQiOjE3NDkzNzEwMzMsImV4cCI6MTc0OTQ1NzQzM30.CUnIT5dbe8F_HZz2c0umSWW8Cd_U4HCgBxKGGDaP9No"; // Replace this with the token for an authenticated user
+            const token = "YOUR_JWT_TOKEN_HERE"; // Replace this with the token for an authenticated user
 
             // 1. Prepare dummy order data
             const orderData = {
                 "items": [
                     {
-                        "product": "68449fdb76a8ffec98960eb8",
+                        "product": "PRODUCT_ID_1", // Replace with actual product IDs
                         "quantity": 2
                     },
                     {
-                        "product": "6845130fa1eb044e2ca0999f",
+                        "product": "PRODUCT_ID_2", // Replace with actual product IDs
                         "quantity": 1
                     }
+                    // Add more items as needed
                 ],
                 "shippingAddress": {
                     "street": "123 Fashion St",
@@ -66,7 +67,7 @@
 
             // 3. Launch Razorpay checkout
             const options = {
-                key: "rzp_test_LDfTXckqr1wboK",
+                key: "RAZORPAY_KEY_ID", // Replace with your Razorpay key ID
                 amount: razorpayOrder.amount,
                 currency: "INR",
                 name: "Test E-Commerce",

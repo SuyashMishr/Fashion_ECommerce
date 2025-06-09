@@ -8,6 +8,18 @@ const categorySchema = new mongoose.Schema({
     ref: "Category",
     default: null,
   }, // for optional subcategories
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+
+// Virtual fields
+categorySchema.virtual('subcategories', {
+  ref: 'Category',
+  localField: '_id',
+  foreignField: 'parentCategory',
 });
 
 module.exports = mongoose.model("Category", categorySchema);

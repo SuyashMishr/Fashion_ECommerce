@@ -1,39 +1,42 @@
 const mongoose = require('mongoose');
 const logger = require('../utils/logger');
 
+/**
+ * Establishes a connection to MongoDB using Mongoose.
+ * Includes graceful shutdown and logs lifecycle events.
+ * @returns {Promise<mongoose.Connection>}
+ */
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
 
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-    logger.info(`MongoDB Connected: ${conn.connection.host}`);
+    logger.info(`MongoDB connected at: ${conn.connection.host}`);
 
-    // Handle connection events
+    // Handle successful connection
     mongoose.connection.on('connected', () => {
       logger.info('Mongoose connected to MongoDB');
     });
 
+    // Handle connection error
     mongoose.connection.on('error', (err) => {
-      logger.error('Mongoose connection error:', err);
+      logger.error(`Mongoose connection error: ${err.message}`);
     });
 
+    // Handle disconnection
     mongoose.connection.on('disconnected', () => {
       logger.warn('Mongoose disconnected from MongoDB');
     });
 
-    // Handle application termination
+    // Graceful shutdown
     process.on('SIGINT', async () => {
       await mongoose.connection.close();
-      logger.info('Mongoose connection closed due to application termination');
+      logger.info('Mongoose connection closed due to app termination');
       process.exit(0);
     });
 
     return conn;
   } catch (error) {
-    logger.error('Database connection error:', error);
+    logger.error(`MongoDB connection failed: ${error.message}`);
     process.exit(1);
   }
 };

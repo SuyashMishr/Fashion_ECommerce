@@ -11,11 +11,11 @@ const path = require('path');
 
 // Import middlewares
 const errorHandler = require('./middlewares/errorHandler');
+const {swaggerUi, swaggerSpec} = require('./config/swagger');
 const logger = require('./utils/logger');
 
 // Import routes
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
 const categoryRoutes = require('./routes/categories');
 const orderRoutes = require('./routes/orders');
@@ -26,10 +26,10 @@ const paymentRoutes = require('./routes/payments');
 
 const app = express();
 
-// Trust proxy
+// If app runs behind a proxy (e.g., Heroku, Nginx), trust the first proxy
 app.set('trust proxy', 1);
 
-// Security middlewares
+// Security middlewares to set HTTP headers for better security
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -38,7 +38,7 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
       scriptSrc: ["'self'"],
-      connectSrc: ["'self'", "https://api.stripe.com"]
+      connectSrc: ["'self'", "https://api.razorpay.com"]
     }
   }
 }));
@@ -48,6 +48,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL,
   'http://localhost:4200',
+  'http://localhost:5000'
 ];
 
 app.use(cors({
@@ -79,12 +80,15 @@ app.use('/api/', limiter);
 // Body & cookie parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Parse cookies for session management or authentication
 app.use(cookieParser());
 
-
-// Sanitization like mongoSanitize, xss, and hpp
+// Data sanitization to prevent NoSQL injection attacks
 app.use(mongoSanitize());
+
+// Sanitize user input to prevent XSS (Cross-Site Scripting) attacks
 app.use(xss());
+// Protect against HTTP Parameter Pollution attacks; whitelist certain query params
 app.use(hpp({
   whitelist: ['sort', 'fields', 'page', 'limit', 'category', 'brand', 'size', 'color', 'price']
 }));
@@ -101,6 +105,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// Basic root endpoint to verify server is running
 app.get('/', (req, res) => {
   res.status(200).json({ 
     status: 'success',
@@ -110,7 +115,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Health check endpoint
+// Health check endpoint for monitoring tools or load balancers
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -120,9 +125,8 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes
+// Mount routers for different API resources
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
@@ -131,25 +135,7 @@ app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/payments', paymentRoutes);
 
-// API documentation endpoint
-app.get('/api', (req, res) => {
-  res.json({
-    message: 'Fashion E-Commerce API',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      users: '/api/users',
-      products: '/api/products',
-      categories: '/api/categories',
-      orders: '/api/orders',
-      cart: '/api/cart',
-      wishlist: '/api/wishlist',
-      reviews: '/api/reviews',
-      payments: '/api/payments',
-    },
-    documentation: '/api/docs'
-  });
-});
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Handle undefined routes
 app.all('*', (req, res, next) => {

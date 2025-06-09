@@ -1,6 +1,7 @@
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
+const logger = require('../utils/logger');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -9,9 +10,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Configure Cloudinary storage for multer
+// Configure multer + Cloudinary storage
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary,
   params: {
     folder: 'fashion-ecommerce',
     allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
@@ -22,19 +23,14 @@ const storage = new CloudinaryStorage({
   },
 });
 
-// Configure multer with Cloudinary storage
 const upload = multer({
-  storage: storage,
+  storage,
   limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024, // 5MB
+    fileSize: parseInt(process.env.MAX_FILE_SIZE || `${5 * 1024 * 1024}`), // 5MB fallback
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = process.env.ALLOWED_FILE_TYPES?.split(',') || [
-      'image/jpeg',
-      'image/png',
-      'image/webp'
-    ];
-    
+    const allowedTypes = (process.env.ALLOWED_FILE_TYPES || 'image/jpeg,image/png,image/webp').split(',');
+
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -43,30 +39,45 @@ const upload = multer({
   },
 });
 
-// Helper function to delete image from Cloudinary
+/**
+ * Deletes an image from Cloudinary using its public ID
+ * @param {string} publicId
+ */
 const deleteImage = async (publicId) => {
   try {
     const result = await cloudinary.uploader.destroy(publicId);
+    logger.info(`Image deleted from Cloudinary: ${publicId}`);
     return result;
   } catch (error) {
+    logger.error(`Failed to delete image: ${error.message}`);
     throw new Error(`Failed to delete image: ${error.message}`);
   }
 };
 
-// Helper function to upload image to Cloudinary
+/**
+ * Uploads an image file to Cloudinary
+ * @param {string} filePath
+ * @param {object} options
+ */
 const uploadImage = async (filePath, options = {}) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       folder: 'fashion-ecommerce',
       ...options,
     });
+    logger.info(`Image uploaded to Cloudinary: ${result.public_id}`);
     return result;
   } catch (error) {
+    logger.error(`Failed to upload image: ${error.message}`);
     throw new Error(`Failed to upload image: ${error.message}`);
   }
 };
 
-// Helper function to generate optimized image URLs
+/**
+ * Generates an optimized Cloudinary image URL
+ * @param {string} publicId
+ * @param {object} options
+ */
 const getOptimizedImageUrl = (publicId, options = {}) => {
   return cloudinary.url(publicId, {
     fetch_format: 'auto',

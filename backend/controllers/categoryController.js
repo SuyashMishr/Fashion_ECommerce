@@ -2,6 +2,12 @@ const Category = require("../models/Category");
 const logger = require("../utils/logger");
 const Product = require("../models/Product");
 
+
+/**
+ * Adds a new category.
+ * Checks for duplicate category name before creating.
+ * Supports optional parent category for nested categories.
+ */
 const addCategory = async (req, res, next) => {
     try {
         const { name, description, parentCategory } = req.body;
@@ -29,11 +35,16 @@ const addCategory = async (req, res, next) => {
     }
 };
 
+/**
+ * Updates an existing category by ID.
+ * Allows partial updates for name, description, and parentCategory.
+ */
 const updateCategory = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { name, description, parentCategory } = req.body;
 
+        // Find category by ID
         const category = await Category.findById(id);
         if (!category) {
             return res
@@ -41,6 +52,7 @@ const updateCategory = async (req, res, next) => {
                 .json({ success: false, message: "Category not found" });
         }
 
+        // Update fields if provided
         if (name) category.name = name;
         if (description) category.description = description;
         category.parentCategory = parentCategory || null;
@@ -55,11 +67,16 @@ const updateCategory = async (req, res, next) => {
     }
 };
 
+
+/**
+ * Deletes a category by ID.
+ * Prevents deletion if the category is linked to any products.
+ */
 const deleteCategory = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        // Optional: check if category is linked to products
+        // Check if any products are associated with this category
         const productCount = await Product.countDocuments({ category: id });
         if (productCount > 0) {
             return res
@@ -70,6 +87,7 @@ const deleteCategory = async (req, res, next) => {
                 });
         }
 
+        // Delete category by ID
         const category = await Category.findByIdAndDelete(id);
         if (!category) {
             return res
@@ -86,6 +104,11 @@ const deleteCategory = async (req, res, next) => {
         next(error);
     }
 };
+
+/**
+ * Fetches all categories.
+ * Uses lean() for better performance by returning plain JS objects instead of Mongoose documents.
+ */
 
 const getAllCategories = async (req, res, next) => {
     try {

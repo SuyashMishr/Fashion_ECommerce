@@ -12,6 +12,7 @@ class EmailService {
     });
   }
 
+  // Send a general email with specified to, subject, html and optional plain text content
   async sendEmail(to, subject, html, text = null) {
     try {
       const mailOptions = {
@@ -22,8 +23,9 @@ class EmailService {
         text: text || this.stripHtml(html)
       };
 
+      // Send email using transporter
       const result = await this.transporter.sendMail(mailOptions);
-      logger.info(`Email sent successfully to ${to}: ${subject}`);
+      logger.info(`Email sent successfully to ${to}: ${subject}`); 
       return result;
     } catch (error) {
       logger.error(`Failed to send email to ${to}:`, error);
@@ -31,6 +33,7 @@ class EmailService {
     }
   }
 
+  // Send email for email verification with a unique token and personalized greeting
   async sendVerificationEmail(email, token, firstName) {
     const verificationUrl = `http://localhost:${process.env.PORT}/api/auth/verify-email/${token}`;
     
@@ -77,6 +80,7 @@ class EmailService {
     return this.sendEmail(email, 'Verify Your Email Address', html);
   }
 
+  // Send password reset email with token and personalized greeting
   async sendPasswordResetEmail(email, token, firstName) {
     const resetUrl = `http://localhost:${process.env.PORT}/api/auth/forgot-password/${token}`;
     
@@ -124,64 +128,65 @@ class EmailService {
     return this.sendEmail(email, 'Reset Your Password', html);
   }
 
-async sendOrderConfirmationEmail(email, order, buyerName) {
-  const firstName = buyerName.split(' ')[0] || buyerName;
+  // Send order confirmation email with order details and buyer's first name
+  async sendOrderConfirmationEmail(email, order, buyerName) {
+    const firstName = buyerName.split(' ')[0] || buyerName;
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Order Confirmation</title>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #059669; color: white; padding: 20px; text-align: center; }
-        .content { padding: 30px 20px; background: #f9f9f9; }
-        .order-details { background: white; padding: 20px; margin: 20px 0; border-radius: 5px; }
-        .item { border-bottom: 1px solid #eee; padding: 10px 0; }
-        .total { font-weight: bold; font-size: 18px; color: #059669; }
-        .footer { padding: 20px; text-align: center; color: #666; font-size: 14px; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Order Confirmed!</h1>
-        </div>
-        <div class="content">
-          <h2>Hi ${firstName},</h2>
-          <p>Thank you for your order! We've received your order and it's being processed.</p>
-          <div class="order-details">
-            <h3>Order Details</h3>
-            <p><strong>Order ID:</strong> ${order._id}</p>
-            <p><strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}</p>
-            <h4>Items:</h4>
-            ${order.items.map(item => `
-              <div class="item">
-                <p><strong>${item.product.title || 'Product'}</strong></p>
-                <p>Quantity: ${item.quantity} | Price: ₹${item.price}</p>
-              </div>
-            `).join('')}
-            <div class="total">
-              <p>Total: ₹${order.pricing.total || 'N/A'}</p>
-            </div>
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order Confirmation</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #059669; color: white; padding: 20px; text-align: center; }
+          .content { padding: 30px 20px; background: #f9f9f9; }
+          .order-details { background: white; padding: 20px; margin: 20px 0; border-radius: 5px; }
+          .item { border-bottom: 1px solid #eee; padding: 10px 0; }
+          .total { font-weight: bold; font-size: 18px; color: #059669; }
+          .footer { padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Order Confirmed!</h1>
           </div>
-          <p>We'll send you another email when your order ships.</p>
+          <div class="content">
+            <h2>Hi ${firstName},</h2>
+            <p>Thank you for your order! We've received your order and it's being processed.</p>
+            <div class="order-details">
+              <h3>Order Details</h3>
+              <p><strong>Order ID:</strong> ${order._id}</p>
+              <p><strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}</p>
+              <h4>Items:</h4>
+              ${order.items.map(item => `
+                <div class="item">
+                  <p><strong>${item.product.title || 'Product'}</strong></p>
+                  <p>Quantity: ${item.quantity} | Price: ₹${item.price}</p>
+                </div>
+              `).join('')}
+              <div class="total">
+                <p>Total: ₹${order.pricing.total || 'N/A'}</p>
+              </div>
+            </div>
+            <p>We'll send you another email when your order ships.</p>
+          </div>
+          <div class="footer">
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+          </div>
         </div>
-        <div class="footer">
-          <p>&copy; 2024 Your Company. All rights reserved.</p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
+      </body>
+      </html>
+    `;
 
-  return this.sendEmail(email, `Order Confirmation - ${order._id}`, html);
-}
+    return this.sendEmail(email, `Order Confirmation - ${order._id}`, html);
+  }
 
-
+  // Utility method to strip HTML tags from a string for plain text fallback
   stripHtml(html) {
     return html.replace(/<[^>]*>/g, '');
   }

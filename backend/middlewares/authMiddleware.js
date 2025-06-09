@@ -93,75 +93,8 @@ const authorizeRole = (...roles) => {
   };
 };
 
-// Middleware to check if user is seller and approved
-const requireApprovedSeller = (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({
-      success: false,
-      message: 'Access denied. Please authenticate first.'
-    });
-  }
-
-  if (req.user.role !== 'seller') {
-    return res.status(403).json({
-      success: false,
-      message: 'Access denied. Seller account required.'
-    });
-  }
-
-  if (req.user.sellerStatus !== 'approved') {
-    return res.status(403).json({
-      success: false,
-      message: 'Access denied. Seller account must be approved.'
-    });
-  }
-
-  next();
-};
-
-// Middleware to check if user owns the resource
-const checkOwnership = (resourceModel, resourceIdParam = 'id') => {
-  return async (req, res, next) => {
-    try {
-      const resourceId = req.params[resourceIdParam];
-      const resource = await resourceModel.findById(resourceId);
-
-      if (!resource) {
-        return res.status(404).json({
-          success: false,
-          message: 'Resource not found.'
-        });
-      }
-
-      // Check if user owns the resource
-      const ownerId = resource.user || resource.seller || resource.buyer || resource.owner;
-      
-      if (!ownerId || ownerId.toString() !== req.user._id.toString()) {
-        // Allow admin to access any resource
-        if (req.user.role !== 'admin') {
-          return res.status(403).json({
-            success: false,
-            message: 'Access denied. You can only access your own resources.'
-          });
-        }
-      }
-
-      req.resource = resource;
-      next();
-    } catch (error) {
-      logger.error('Ownership check error:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Server error during ownership verification.'
-      });
-    }
-  };
-};
-
 
 module.exports = {
   authenticate,
   authorizeRole,
-  requireApprovedSeller,
-  checkOwnership,
 };

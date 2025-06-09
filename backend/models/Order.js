@@ -103,14 +103,17 @@ const orderSchema = new mongoose.Schema({
   shipping: shippingSchema,
   cancelledAt: Date,
   returnedAt: Date,
-}, { timestamps: true });
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
 
 // // Indexes
-// orderSchema.index({ buyer: 1, createdAt: -1 });
-// orderSchema.index({ orderNumber: 1 });
-// orderSchema.index({ status: 1 });
-// orderSchema.index({ 'items.seller': 1, createdAt: -1 });
-// orderSchema.index({ 'payment.status': 1 });
+orderSchema.index({ buyer: 1, createdAt: -1 });
+orderSchema.index({ orderNumber: 1 });
+orderSchema.index({ status: 1 });
+
 
 // Virtual: total number of items
 orderSchema.virtual('totalItems').get(function() {
