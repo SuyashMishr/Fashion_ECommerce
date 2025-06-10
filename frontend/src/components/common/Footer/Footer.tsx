@@ -148,7 +148,7 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="mt-8 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-300 text-sm">
-            © 2024 Modern Metro. All rights reserved. | Designed with ❤️ for Fashion Enthusiasts
+            © 2025 Code Command. All rights reserved. | Designed with ❤️.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link to="/privacy" className="text-gray-300 hover:text-white text-sm">

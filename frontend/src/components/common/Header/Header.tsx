@@ -97,14 +97,59 @@ const Header: React.FC = () => {
         </div>
       </div>
 
+<<<<<<< HEAD
       
         {/*navigation*/}
                   <nav className="hidden lg:flex bg-slate-400 space-x-1 flex-row justify-center items-center text-orange-400">
+=======
+      {/* Main Navigation Header */}
+      
+      <header className="bg-white shadow-lg sticky top-0 z-50">
+        {/* Main Header */}
+        <div className="border-b border-gray-100 flex items-center justify-between">
+      <div className="w-full px-2">
+
+
+     <div className="flex items-center justify-between h-20">
+
+            {/* Modern Metro Logo - Metro Design Language */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center group">
+                <div className="relative">
+                  {/* Metro-style Logo Tile */}
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-none flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-105" style={{ backgroundColor: '#0078D4' }}>
+                    <div className="text-white font-black text-2xl tracking-tight">
+                      MM
+                    </div>
+                  </div>
+                  {/* Live Tile Indicator */}
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-pink-500 to-pink-600 rounded-sm animate-pulse" style={{ backgroundColor: '#E91E63' }}>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="ml-6">
+                  <div className="flex items-center ">
+                    <span className="text-2xl font-black text-gray-800 tracking-tight hidden md:inline-block" style={{ fontFamily: 'Inter, Segoe UI, sans-serif', color: '#2D3748' }}>
+                      Modern Metro
+                    </span>
+                  </div>
+                  <div className="text-sm font-medium text-gray-600 tracking-wide hidden md:inline-block" style={{ color: '#4A5568' }}>
+                    Fashion Redefined
+                  </div>
+                </div>
+              </Link>
+            </div>
+
+            {/* Metro Design Navigation */}
+            <nav className="hidden lg:flex items-center space-x-1">
+>>>>>>> d75c094ab26bb7987cd7a72128265fc7dc8cf652
               {categories.map((category) => (
                 <div key={category.name} className="relative group">
                   <Link
                     to={category.link}
-                    className="px-8 py-4 text-sm font-semibold text-gray-800 hover:text-white hover:bg-blue-600 transition-all duration-200 uppercase tracking-wide flex items-center border-b-2 border-transparent hover:border-blue-600"
+                    className="px-4 py-4 text-sm font-semibold text-gray-800 hover:text-white hover:bg-blue-600 transition-all duration-200 uppercase tracking-wide flex items-center border-b-2 border-transparent hover:border-blue-600"
                     style={{
                       fontFamily: 'Inter, Segoe UI, sans-serif',
                       color: '#2D3748',
@@ -175,7 +220,7 @@ const Header: React.FC = () => {
                       <div className="mt-6 pt-4 border-t border-gray-200">
                         <Link
                           to={category.link}
-                          className="w-full bg-blue-600 text-white font-bold py-4 px-6 hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center text-sm uppercase tracking-wide"
+                          className="w-full bg-blue-600 text-white font-bold py-4 px-2 hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center text-sm uppercase tracking-wide"
                           style={{
                             backgroundColor: '#0078D4',
                             fontFamily: 'Inter, Segoe UI, sans-serif'
@@ -546,12 +591,12 @@ const Header: React.FC = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="px-4 py-3 space-y-1">
+          <div className="px-2 py-3 space-y-1">
             {categories.map((category) => (
               <Link
                 key={category.name}
                 to={category.link}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {category.name}
@@ -562,19 +607,19 @@ const Header: React.FC = () => {
             <div className="pt-4 border-t border-gray-200">
               {isAuthenticated ? (
                 <>
-                  <div className="px-3 py-2 text-sm text-gray-500">
+                  <div className="px-2 py-2 text-sm text-gray-500">
                     Signed in as {user?.firstName}
                   </div>
                   <Link
                     to="/profile"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                    className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Profile
                   </Link>
                   <Link
                     to="/orders"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                    className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Orders
@@ -590,14 +635,14 @@ const Header: React.FC = () => {
                 <>
                   <Link
                     to="/login"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                    className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Sign in
                   </Link>
                   <Link
                     to="/register"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                    className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Create account
