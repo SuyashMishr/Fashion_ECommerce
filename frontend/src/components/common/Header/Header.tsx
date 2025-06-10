@@ -96,11 +96,15 @@ const Header: React.FC = () => {
       </div>
 
       {/* Main Navigation Header */}
+      
       <header className="bg-white shadow-lg sticky top-0 z-50">
         {/* Main Header */}
-        <div className="border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+        <div className="border-b border-gray-100 flex items-center justify-between">
+      <div className="w-full px-2">
+
+
+     <div className="flex items-center justify-between h-20">
+
             {/* Modern Metro Logo - Metro Design Language */}
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center group">
@@ -120,7 +124,7 @@ const Header: React.FC = () => {
                 </div>
                 <div className="ml-6">
                   <div className="flex items-center">
-                    <span className="text-3xl font-black text-gray-800 tracking-tight" style={{ fontFamily: 'Inter, Segoe UI, sans-serif', color: '#2D3748' }}>
+                    <span className="text-2xl font-black text-gray-800 tracking-tight" style={{ fontFamily: 'Inter, Segoe UI, sans-serif', color: '#2D3748' }}>
                       Modern Metro
                     </span>
                   </div>
@@ -137,7 +141,7 @@ const Header: React.FC = () => {
                 <div key={category.name} className="relative group">
                   <Link
                     to={category.link}
-                    className="px-8 py-4 text-sm font-semibold text-gray-800 hover:text-white hover:bg-blue-600 transition-all duration-200 uppercase tracking-wide flex items-center border-b-2 border-transparent hover:border-blue-600"
+                    className="px-4 py-4 text-sm font-semibold text-gray-800 hover:text-white hover:bg-blue-600 transition-all duration-200 uppercase tracking-wide flex items-center border-b-2 border-transparent hover:border-blue-600"
                     style={{
                       fontFamily: 'Inter, Segoe UI, sans-serif',
                       color: '#2D3748',
@@ -208,7 +212,7 @@ const Header: React.FC = () => {
                       <div className="mt-6 pt-4 border-t border-gray-200">
                         <Link
                           to={category.link}
-                          className="w-full bg-blue-600 text-white font-bold py-4 px-6 hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center text-sm uppercase tracking-wide"
+                          className="w-full bg-blue-600 text-white font-bold py-4 px-2 hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center text-sm uppercase tracking-wide"
                           style={{
                             backgroundColor: '#0078D4',
                             fontFamily: 'Inter, Segoe UI, sans-serif'
