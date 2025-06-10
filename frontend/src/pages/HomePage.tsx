@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRightIcon, ShoppingBagIcon, TruckIcon, ShieldCheckIcon, StarIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { TypeAnimation } from 'react-type-animation';
+import banner from "../assets/sp.mp4"
 
 const HomePage: React.FC = () => {
   // Mock data for featured products
@@ -76,9 +78,9 @@ const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-hidde">
       {/* Metro Hero Section */}
-      <section className="relative bg-white overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
+      <section className="relative bg-slate-700 overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
         {/* Metro Background Pattern */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-600 opacity-5" style={{ backgroundColor: '#0078D4' }}></div>
@@ -97,10 +99,19 @@ const HomePage: React.FC = () => {
               </div>
 
               {/* Metro Typography */}
-              <h1 className="text-6xl md:text-8xl font-black mb-8 leading-none" style={{ fontFamily: 'Inter, Segoe UI, sans-serif', color: '#2D3748' }}>
-                <span className="block">FASHION</span>
-                <span className="block text-blue-600" style={{ color: '#0078D4' }}>REDEFINED</span>
+              <h1 className='flex flex-row text-6xl items-center text-amber-600  '>
+                      < TypeAnimation repeat={Infinity} sequence={[`FASHION REDEFINED`,2000,""] } omitDeletionAnimation={true}
+                    style={
+                      {
+                        whiteSpace:"pre-line",
+                        display:"block"
+                      }
+                    }
+             /> 
               </h1>
+       
+              
+            
 
               <p className="text-xl md:text-2xl mb-12 text-gray-600 leading-relaxed max-w-lg" style={{ color: '#4A5568', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
                 Discover premium collections from global designers.
@@ -129,11 +140,9 @@ const HomePage: React.FC = () => {
 
             {/* Metro Image Tile */}
             <div className="relative">
-              <div className="relative">
-                <img
-                  src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=700&fit=crop"
-                  alt="Fashion Model"
-                  className="w-full h-96 object-cover shadow-2xl"
+              <div className="relative shadow-black shadow-xl border2-gray-400 rounded-sm h-[60%]" >
+                <video
+                  src={banner} muted loop autoPlay
                 />
                 {/* Metro Overlay Badge */}
                 <div className="absolute top-6 right-6 bg-pink-500 text-white px-6 py-4 font-bold text-xl" style={{ backgroundColor: '#E91E63', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
@@ -149,7 +158,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Metro Live Tiles Section */}
-      <section className="py-20 bg-gray-50" style={{ backgroundColor: '#F7FAFC' }}>
+      <section className="py-20 bg-white" style={{ backgroundColor: '#F7FAFC' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {/* Free Shipping Tile */}

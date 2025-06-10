@@ -11,13 +11,13 @@ const Footer: React.FC = () => {
             <div className="flex items-center mb-8">
               <div className="relative mr-6">
                 {/* Metro Logo Tile */}
-                <div className="w-16 h-16 bg-blue-600 flex items-center justify-center shadow-lg" style={{ backgroundColor: '#0078D4' }}>
+                <div className="w-16 h-16 bg-blue-600 flex items-center  rounded-full justify-center shadow-lg" style={{ backgroundColor: '#0078D4' }}>
                   <div className="text-white font-black text-2xl tracking-tight">
                     MM
                   </div>
                 </div>
                 {/* Live Tile Indicator */}
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-500" style={{ backgroundColor: '#E91E63' }}>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 -translate-x-7 translate-y-2 rounded-full" style={{ backgroundColor: '#E91E63' }}>
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="w-2 h-2 bg-white rounded-full"></div>
                   </div>
@@ -129,10 +129,10 @@ const Footer: React.FC = () => {
         <div className="mt-8 pt-8 border-t border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <h4 className="text-lg font-semibold text-white mb-2">Stay Updated</h4>
+              <h4 className="text-lg  font-extrabold mb-2">Stay Updated</h4>
               <p className="text-gray-300">Subscribe to get special offers, free giveaways, and updates.</p>
             </div>
-            <div className="flex w-full md:w-auto">
+            <div className="flex w-full md:w-auto text-black">
               <input
                 type="email"
                 placeholder="Enter your email"

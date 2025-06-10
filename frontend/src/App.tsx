@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
@@ -24,9 +24,10 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
   return (
-    <Provider store={store}>
+    <div >
+      <Provider store={store}>
       <Router>
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen bg-gray-50 flex flex-col ">
           <Header />
           <main className="flex-1">
             <Routes>
@@ -87,6 +88,7 @@ function App() {
         />
       </Router>
     </Provider>
+    </div>
   );
 }
 

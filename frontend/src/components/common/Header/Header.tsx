@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../../store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { ShoppingCartIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import toast from 'react-hot-toast';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,6 +19,7 @@ const Header: React.FC = () => {
     dispatch(logout());
     navigate('/');
     setShowUserMenu(false);
+    toast.success("Loggeed out successfully");
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -95,44 +97,9 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Navigation Header */}
-      <header className="bg-white shadow-lg sticky top-0 z-50">
-        {/* Main Header */}
-        <div className="border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Modern Metro Logo - Metro Design Language */}
-            <div className="flex-shrink-0">
-              <Link to="/" className="flex items-center group">
-                <div className="relative">
-                  {/* Metro-style Logo Tile */}
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-none flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-105" style={{ backgroundColor: '#0078D4' }}>
-                    <div className="text-white font-black text-2xl tracking-tight">
-                      MM
-                    </div>
-                  </div>
-                  {/* Live Tile Indicator */}
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-pink-500 to-pink-600 rounded-sm animate-pulse" style={{ backgroundColor: '#E91E63' }}>
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-                <div className="ml-6">
-                  <div className="flex items-center">
-                    <span className="text-3xl font-black text-gray-800 tracking-tight" style={{ fontFamily: 'Inter, Segoe UI, sans-serif', color: '#2D3748' }}>
-                      Modern Metro
-                    </span>
-                  </div>
-                  <div className="text-sm font-medium text-gray-600 tracking-wide" style={{ color: '#4A5568' }}>
-                    Fashion Redefined
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            {/* Metro Design Navigation */}
-            <nav className="hidden lg:flex items-center space-x-1">
+      
+        {/*navigation*/}
+                  <nav className="hidden lg:flex bg-slate-400 space-x-1 flex-row justify-center items-center text-orange-400">
               {categories.map((category) => (
                 <div key={category.name} className="relative group">
                   <Link
@@ -230,6 +197,44 @@ const Header: React.FC = () => {
                 🔥 Sale 70% Off
               </div>
             </nav>
+            {/* Main Navigation Header */}
+      <header className="bg-cyan-500 rounded-md text-white shadow-lg sticky top-0 z-50 flex flex-col flex-wrap">
+        {/* Main Header */}
+        <div className="border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Modern Metro Logo - Metro Design Language */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center group">
+                <div className="relative">
+                  {/* Metro-style Logo Tile */}
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-105" style={{ backgroundColor: '#0078D4' }}>
+                    <div className="text-white font-black text-2xl tracking-tight">
+                      MM
+                    </div>
+                  </div>
+                  {/* Live Tile Indicator */}
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r -translate-x-7 translate-y-2 from-pink-500 to-pink-600 rounded-full animate-pulse" style={{ backgroundColor: '#E91E63' }}>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="ml-6">
+                  <div className="flex items-center">
+                    <span className="text-3xl font-black text-gray-800 tracking-tight" style={{ fontFamily: 'Inter, Segoe UI, sans-serif', color: '#2D3748' }}>
+                      Modern Metro
+                    </span>
+                  </div>
+                  <div className="text-sm font-medium text-gray-600 tracking-wide" style={{ color: '#4A5568' }}>
+                    Fashion Redefined
+                  </div>
+                </div>
+              </Link>
+            </div>
+
+            {/* Metro Design Navigation */}
+  
 
             {/* Metro Search Bar */}
             <div className="hidden md:flex flex-1 max-w-4xl mx-8">
@@ -261,9 +266,7 @@ const Header: React.FC = () => {
                   />
                   <div className="absolute inset-y-0 right-0 pr-6 flex items-center">
                     <div className="flex items-center space-x-4">
-                      <kbd className="hidden lg:inline-block px-3 py-2 text-sm font-bold text-blue-600 bg-blue-50 border border-blue-200 shadow-sm" style={{ backgroundColor: '#EBF8FF', color: '#0078D4', borderColor: '#90CDF4' }}>
-                        Ctrl+K
-                      </kbd>
+                   
                       <button
                         type="submit"
                         className="p-3 bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg"
