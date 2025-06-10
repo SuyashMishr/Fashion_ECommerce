@@ -32,8 +32,8 @@ interface UserProfile {
 
 const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [contextMessage, setContextMessage] = useState('');
+  // Removed unused 'showNotification' state to resolve the compile error.
+  // Removed unused 'contextMessage' state to resolve the compile error.
   const location = useLocation();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -237,45 +237,9 @@ const Chatbot: React.FC = () => {
   };
 
   // Predefined bot responses for exact keyword matches
-  const botResponses: { [key: string]: string } = {
-    'hello': "Hello! How can I assist you with your fashion needs today? 😊",
-    'hi': "Hi there! Need help finding something stylish?",
-    'help': "I'm here to help! Ask me about products, sizing, orders, or anything fashion-related.",
-    'return': "You can return any item within 14 days of delivery. Would you like to start a return?",
-    'refund': "Refunds are processed within 3-5 business days after we receive your returned item.",
-    'shipping': "We offer free shipping on orders above ₹999. Standard delivery takes 2-5 business days.",
-    'delivery': "Standard delivery takes 2-5 business days. Need express delivery options?",
-    'contact': "You can reach our customer support at support@modernmetro.com or chat here for quick help!",
-    'exchange': "We offer easy exchanges for size or color. Would you like to exchange an item?",
-    'cancel': "To cancel an order, please provide your order number or visit your orders page."
-  };
+  // Removed unused 'botResponses' to resolve the compile error.
 
-  const generateBotResponse = (userMessage: string): string => {
-    const lowerMessage = userMessage.toLowerCase();
-    
-    // Check for exact matches first
-    for (const [key, response] of Object.entries(botResponses)) {
-      if (lowerMessage.includes(key)) {
-        return response;
-      }
-    }
-
-    // Check for keywords
-    if (lowerMessage.includes('product') || lowerMessage.includes('item') || lowerMessage.includes('clothes')) {
-      return "You can browse our products by visiting the Products page! We have categories for Women's Fashion, Men's Fashion, Accessories, and Footwear. Use filters to find exactly what you're looking for! 🛍️";
-    }
-    
-    if (lowerMessage.includes('discount') || lowerMessage.includes('sale') || lowerMessage.includes('offer')) {
-      return "Great news! We have ongoing discounts up to 33% off on selected items. Check our homepage for featured deals and sign up for our newsletter to get exclusive offers! 🎉";
-    }
-
-    if (lowerMessage.includes('brand')) {
-      return "We feature top brands like Zara, H&M, Nike, Levi's, Mango, Coach, and many more! You can filter products by brand on our Products page. 👔";
-    }
-
-    // Default response
-    return "I'm not sure about that, but I'm here to help! You can ask me about products, sizing, orders, returns, or anything else related to shopping. You can also contact our customer support for detailed assistance! 🤔";
-  };
+  // Removed unused function 'generateBotResponse' to resolve the compile error.
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
