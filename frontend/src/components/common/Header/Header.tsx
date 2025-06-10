@@ -123,12 +123,12 @@ const Header: React.FC = () => {
                   </div>
                 </div>
                 <div className="ml-6">
-                  <div className="flex items-center">
-                    <span className="text-2xl font-black text-gray-800 tracking-tight" style={{ fontFamily: 'Inter, Segoe UI, sans-serif', color: '#2D3748' }}>
+                  <div className="flex items-center ">
+                    <span className="text-2xl font-black text-gray-800 tracking-tight hidden md:inline-block" style={{ fontFamily: 'Inter, Segoe UI, sans-serif', color: '#2D3748' }}>
                       Modern Metro
                     </span>
                   </div>
-                  <div className="text-sm font-medium text-gray-600 tracking-wide" style={{ color: '#4A5568' }}>
+                  <div className="text-sm font-medium text-gray-600 tracking-wide hidden md:inline-block" style={{ color: '#4A5568' }}>
                     Fashion Redefined
                   </div>
                 </div>
@@ -547,12 +547,12 @@ const Header: React.FC = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="px-4 py-3 space-y-1">
+          <div className="px-2 py-3 space-y-1">
             {categories.map((category) => (
               <Link
                 key={category.name}
                 to={category.link}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {category.name}
@@ -563,19 +563,19 @@ const Header: React.FC = () => {
             <div className="pt-4 border-t border-gray-200">
               {isAuthenticated ? (
                 <>
-                  <div className="px-3 py-2 text-sm text-gray-500">
+                  <div className="px-2 py-2 text-sm text-gray-500">
                     Signed in as {user?.firstName}
                   </div>
                   <Link
                     to="/profile"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                    className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Profile
                   </Link>
                   <Link
                     to="/orders"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                    className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Orders
@@ -591,14 +591,14 @@ const Header: React.FC = () => {
                 <>
                   <Link
                     to="/login"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                    className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Sign in
                   </Link>
                   <Link
                     to="/register"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
+                    className="block px-2 py-2 rounded-md text-base font-medium text-gray-700 hover:text-pink-600 hover:bg-gray-50"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Create account
