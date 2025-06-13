@@ -79,83 +79,86 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden">
-      {/* Metro Hero Section */}
-      <section className="relative bg-slate-700 overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
-        {/* Metro Background Pattern */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-600 opacity-5" style={{ backgroundColor: '#0078D4' }}></div>
-          <div className="absolute bottom-0 left-0 w-1/4 h-2/3 bg-pink-500 opacity-5" style={{ backgroundColor: '#E91E63' }}></div>
+<section className="relative overflow-hidden">
+  {/* Background Patterns */}
+  <div className="absolute inset-0">
+    <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-600 opacity-5"></div>
+    <div className="absolute bottom-0 left-0 w-1/4 h-2/3 bg-pink-500 opacity-5"></div>
+  </div>
+
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 items-center">
+      {/* Left Content */}
+      <div className="text-left">
+        {/* Badge */}
+        <div className="mb-6 sm:mb-8">
+          <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-pink-500 text-white font-bold text-xs sm:text-sm uppercase tracking-wide">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full mr-2 sm:mr-3 animate-pulse"></div>
+            Limited Time Offer
+          </div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="text-left">
-              {/* Metro Live Tile Badge */}
-              <div className="mb-8">
-                <div className="inline-flex items-center px-6 py-3 bg-pink-500 text-white font-bold text-sm uppercase tracking-wide" style={{ backgroundColor: '#E91E63', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
-                  <div className="w-3 h-3 bg-white rounded-full mr-3 animate-pulse"></div>
-                  Limited Time Offer
-                </div>
-              </div>
+        {/* Animated Heading */}
+        <h1 className="text-xl sm:text-3xl md:text-5xl font-bold text-amber-600 leading-tight">
+          <span className="whitespace-nowrap block">
+            <TypeAnimation
+              repeat={Infinity}
+              sequence={['FASHION REDEFINED', 2000, '']}
+              omitDeletionAnimation={true}
+              style={{ display: 'inline-block' }}
+            />
+          </span>
+        </h1>
 
-              {/* Metro Typography */}
-              <h1 className='flex flex-row text-6xl items-center text-amber-600  '>
-                      < TypeAnimation repeat={Infinity} sequence={[`FASHION REDEFINED`,2000,""] } omitDeletionAnimation={true}
-                    style={
-                      {
-                        whiteSpace:"pre-line",
-                        display:"block"
-                      }
-                    }
-             /> 
-              </h1>
-       
-              
-            
+        {/* Description */}
+        <p className="text-sm sm:text-lg md:text-2xl mt-4 mb-10 text-gray-600 leading-relaxed max-w-lg">
+          Discover premium collections from global designers.
+          <span className="font-bold text-pink-600"> Up to 70% OFF</span> on luxury brands.
+        </p>
 
-              <p className="text-xl md:text-2xl mb-12 text-gray-600 leading-relaxed max-w-lg" style={{ color: '#4A5568', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
-                Discover premium collections from global designers.
-                <span className="font-bold text-pink-600" style={{ color: '#E91E63' }}> Up to 70% OFF</span> on luxury brands.
-              </p>
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            to="/products"
+            className="group inline-flex justify-center items-center px-6 sm:px-10 py-4 sm:py-5 bg-blue-600 text-white font-bold text-base sm:text-lg uppercase tracking-wide hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg"
+            style={{ backgroundColor: '#0078D4' }}
+          >
+            SHOP COLLECTION
+            <ArrowRightIcon className="ml-2 sm:ml-3 h-5 sm:h-6 w-5 sm:w-6 group-hover:translate-x-1 transition-transform" />
+          </Link>
+          <Link
+            to="/products?featured=true"
+            className="inline-flex justify-center items-center px-6 sm:px-10 py-4 sm:py-5 border-2 text-base sm:text-lg font-bold uppercase tracking-wide transition duration-200 hover:bg-gray-800 hover:text-white"
+            style={{ borderColor: '#2D3748', color: '#2D3748' }}
+          >
+            VIEW DEALS
+          </Link>
+        </div>
+      </div>
 
-              {/* Metro Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/products"
-                  className="group inline-flex items-center px-10 py-5 bg-blue-600 text-white font-bold text-lg uppercase tracking-wide hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
-                  style={{ backgroundColor: '#0078D4', fontFamily: 'Inter, Segoe UI, sans-serif' }}
-                >
-                  SHOP COLLECTION
-                  <ArrowRightIcon className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  to="/products?featured=true"
-                  className="inline-flex items-center px-10 py-5 border-2 border-gray-800 text-gray-800 font-bold text-lg uppercase tracking-wide hover:bg-gray-800 hover:text-white transition-all duration-200"
-                  style={{ borderColor: '#2D3748', color: '#2D3748', fontFamily: 'Inter, Segoe UI, sans-serif' }}
-                >
-                  VIEW DEALS
-                </Link>
-              </div>
-            </div>
-
-            {/* Metro Image Tile */}
-            <div className="relative">
-              <div className="relative shadow-black shadow-xl border2-gray-400 rounded-sm h-[60%]" >
-                <video
-                  src={banner} muted loop autoPlay
-                />
-                {/* Metro Overlay Badge */}
-                <div className="absolute top-6 right-6 bg-pink-500 text-white px-6 py-4 font-bold text-xl" style={{ backgroundColor: '#E91E63', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
-                  <div className="text-center">
-                    <div className="text-3xl font-black">70%</div>
-                    <div className="text-sm uppercase tracking-wide">OFF</div>
-                  </div>
-                </div>
-              </div>
+      {/* Right Video/Image */}
+      <div className="w-full">
+        <div className="relative rounded-md overflow-hidden shadow-xl">
+          <video
+            src={banner}
+            muted
+            loop
+            autoPlay
+            className="w-full h-auto object-cover max-h-[300px] sm:max-h-[400px] lg:max-h-[500px]"
+          />
+          {/* Overlay Discount */}
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-pink-500 text-white px-4 sm:px-6 py-2 sm:py-4 font-bold text-sm sm:text-xl">
+            <div className="text-center">
+              <div className="text-xl sm:text-3xl font-black">70%</div>
+              <div className="text-xs sm:text-sm uppercase tracking-wide">OFF</div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* Metro Live Tiles Section */}
       <section className="py-20 bg-gray-50" style={{ backgroundColor: '#F7FAFC' }}>

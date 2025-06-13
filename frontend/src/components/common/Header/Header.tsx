@@ -4,11 +4,23 @@ import { logout } from '../../../store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { ShoppingCartIcon, HeartIcon, UserIcon, MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import SearchBar from '../../SearchBar';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  if (searchQuery.trim()) {
+    navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    setSearchQuery('');
+  }
+};
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -22,13 +34,7 @@ const Header: React.FC = () => {
     toast.success("Loggeed out successfully");
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
-    }
-  };
+
 
   const categories = [
     {
@@ -66,7 +72,10 @@ const Header: React.FC = () => {
   return (
     <>
       {/* Top Utility Bar */}
-      <div className="bg-gray-800 text-white text-sm py-2" style={{ backgroundColor: '#2D3748', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
+      <div
+        className="hidden md:block bg-gray-800 text-white text-sm py-2 "
+        style={{ backgroundColor: '#2D3748', fontFamily: 'Inter, Segoe UI, sans-serif' }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
@@ -78,7 +87,11 @@ const Header: React.FC = () => {
               </span>
               <span className="flex items-center">
                 <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 24/7 Support
               </span>
@@ -98,8 +111,9 @@ const Header: React.FC = () => {
       </div>
 
 
+
       {/*navigation*/}
-      <nav className="hidden lg:flex bg-slate-400 space-x-1 flex-row justify-center items-center text-orange-400">
+      <nav className="hidden lg:flex bg-slate-400 space-x-1 flex-row justify-center items-center text-orange-400 relative z-40">
         {categories.map((category) => (
           <div key={category.name} className="relative group z-40 hover:z-50">
             <Link
@@ -200,7 +214,7 @@ const Header: React.FC = () => {
 
 
       {/* Main Navigation Header */}
-      <header className="bg-cyan-500 rounded-md text-white shadow-lg sticky top-0 z-50 flex flex-col flex-wrap">
+      <header className="bg-cyan-500 rounded-md text-white shadow-lg sticky top-0 z-38 flex flex-col flex-wrap">
         {/* Main Header */}
         <div className="border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -237,142 +251,20 @@ const Header: React.FC = () => {
 
               {/* Metro Design Navigation */}
 
-
-              {/* Metro Search Bar */}
-              <div className="hidden md:flex flex-1 max-w-4xl mx-8">
-                <form onSubmit={handleSearch} className="w-full">
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                      <MagnifyingGlassIcon className="h-6 w-6 text-gray-400 group-focus-within:text-blue-600 transition-colors duration-200" style={{ color: '#A0AEC0' }} />
-                    </div>
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="block w-full pl-16 pr-20 py-6 border-2 border-gray-300 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-blue-600 text-lg font-medium shadow-sm hover:shadow-md transition-all duration-200"
-                      style={{
-                        backgroundColor: '#FFFFFF',
-                        borderColor: '#A0AEC0',
-                        color: '#2D3748',
-                        fontFamily: 'Inter, Segoe UI, sans-serif'
-                      }}
-                      placeholder="Search for products, brands, categories..."
-                      onFocus={(e) => {
-                        e.currentTarget.style.borderColor = '#0078D4';
-                        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0, 120, 212, 0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.borderColor = '#A0AEC0';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }}
-                    />
-                    <div className="absolute inset-y-0 right-0 pr-6 flex items-center">
-                      <div className="flex items-center space-x-4">
-
-                        <button
-                          type="submit"
-                          className="p-3 bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg"
-                          style={{ backgroundColor: '#0078D4' }}
-                        >
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Advanced Search Suggestions */}
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white shadow-2xl border border-gray-200 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 z-50" style={{ backgroundColor: '#FFFFFF' }}>
-                      <div className="p-6">
-                        {/* Trending & Recent */}
-                        <div className="grid grid-cols-3 gap-6 mb-6">
-                          <div>
-                            <div className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3" style={{ color: '#2D3748', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
-                              🔥 Trending
-                            </div>
-                            <div className="space-y-2">
-                              {['dresses', 'jeans', 'sneakers'].map((trend, index) => (
-                                <button
-                                  key={index}
-                                  className="block text-left text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                                  style={{ color: '#4A5568', fontFamily: 'Inter, Segoe UI, sans-serif' }}
-                                >
-                                  {trend}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3" style={{ color: '#2D3748', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
-                              🕒 Recent
-                            </div>
-                            <div className="space-y-2">
-                              {['black shirt', 'heels', 'summer tops'].map((recent, index) => (
-                                <button
-                                  key={index}
-                                  className="block text-left text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                                  style={{ color: '#4A5568', fontFamily: 'Inter, Segoe UI, sans-serif' }}
-                                >
-                                  {recent}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-3" style={{ color: '#2D3748', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
-                              📂 Categories
-                            </div>
-                            <div className="space-y-2">
-                              {['Women (1.2k)', 'Men (890)', 'Kids (456)'].map((category, index) => (
-                                <button
-                                  key={index}
-                                  className="block text-left text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                                  style={{ color: '#4A5568', fontFamily: 'Inter, Segoe UI, sans-serif' }}
-                                >
-                                  {category}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Popular Products Preview */}
-                        <div className="border-t border-gray-200 pt-4">
-                          <div className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-4" style={{ color: '#2D3748', fontFamily: 'Inter, Segoe UI, sans-serif' }}>
-                            Popular Products
-                          </div>
-                          <div className="grid grid-cols-3 gap-4">
-                            {[
-                              { name: 'Black Dress', price: '₹1,999', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=100&h=100&fit=crop' },
-                              { name: 'White Sneakers', price: '₹2,499', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=100&h=100&fit=crop' },
-                              { name: 'Denim Jacket', price: '₹1,799', image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=100&h=100&fit=crop' }
-                            ].map((product, index) => (
-                              <div key={index} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
-                                <img src={product.image} alt={product.name} className="w-12 h-12 object-cover rounded" />
-                                <div>
-                                  <div className="text-sm font-medium text-gray-900" style={{ fontFamily: 'Inter, Segoe UI, sans-serif' }}>
-                                    {product.name}
-                                  </div>
-                                  <div className="text-sm text-blue-600 font-bold" style={{ color: '#0078D4' }}>
-                                    {product.price}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
+              {/* Search Bar */}
+              <SearchBar
+                isAuthenticated={isAuthenticated}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                handleSearch={handleSearch}
+                showSearch={showSearch}
+                setShowSearch={setShowSearch}
+              />
 
               {/* Right Side Icons */}
               <div className="flex items-center space-x-2">
 
-                <div className="flex items-center gap-3">
+                <div className="hidden md:flex items-center gap-3">
                   {!isAuthenticated ? (
                     <>
                       {/* Sign In Button */}
@@ -451,6 +343,7 @@ const Header: React.FC = () => {
                     </>
                   )}
                 </div>
+
 
 
 
