@@ -15,6 +15,8 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import WishlistPage from './pages/WishlistPage';
 import ProfilePage from './pages/ProfilePage';
+import OrdersPage from './pages/OrdersPage';
+import OrderDetailPage from './pages/OrderDetailPage';
 
 // Import components
 import Header from './components/common/Header/Header';
@@ -52,6 +54,16 @@ function App() {
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <ProfilePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/orders" element={
+                <ProtectedRoute>
+                  <OrdersPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/orders/:orderId" element={
+                <ProtectedRoute>
+                  <OrderDetailPage />
                 </ProtectedRoute>
               } />
             </Routes>
